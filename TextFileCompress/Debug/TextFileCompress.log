@@ -1,0 +1,8 @@
+﻿  Main.cpp
+  StringCompress.cpp
+D:\Project1\TextFileCompress\StringCompress.cpp(89,46): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+D:\Project1\TextFileCompress\StringCompress.cpp(179,18): warning C4309: '=': truncation of constant value
+D:\Project1\TextFileCompress\StringCompress.cpp(190,20): warning C4309: '=': truncation of constant value
+D:\Project1\TextFileCompress\StringCompress.cpp(343,46): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+  Generating Code...
+  TextFileCompress.vcxproj -> D:\Project1\TextFileCompress\Debug\TextFileCompress.exe
