@@ -1,11 +1,42 @@
 ﻿  StringCompress.cpp
-D:\Project1\TextFileCompress\StringCompress.cpp(194,20): warning C4309: '=': truncation of constant value
-D:\Project1\TextFileCompress\StringCompress.cpp(208,20): warning C4309: '=': truncation of constant value
-D:\Project1\TextFileCompress\StringCompress.cpp(360,46): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
-D:\Project1\TextFileCompress\StringCompress.cpp(409,25): warning C4312: 'type cast': conversion from 'HFILE' to 'HANDLE' of greater size
-D:\Project1\TextFileCompress\StringCompress.cpp(410,23): warning C4312: 'type cast': conversion from 'HFILE' to 'HANDLE' of greater size
-D:\Project1\TextFileCompress\StringCompress.cpp(422,60): warning C4244: 'argument': conversion from '__int64' to 'int', possible loss of data
-D:\Project1\TextFileCompress\StringCompress.cpp(426,34): warning C4244: 'argument': conversion from '__int64' to 'int', possible loss of data
-D:\Project1\TextFileCompress\StringCompress.cpp(462,49): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
-D:\Project1\TextFileCompress\StringCompress.cpp(477,51): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+D:\Project1\TextFileCompress\StringCompress.cpp(195,20): warning C4309: '=': truncation of constant value
+D:\Project1\TextFileCompress\StringCompress.cpp(209,20): warning C4309: '=': truncation of constant value
+D:\Project1\TextFileCompress\StringCompress.cpp(361,46): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+D:\Project1\TextFileCompress\StringCompress.cpp(417,25): warning C4312: 'type cast': conversion from 'HFILE' to 'HANDLE' of greater size
+D:\Project1\TextFileCompress\StringCompress.cpp(418,23): warning C4312: 'type cast': conversion from 'HFILE' to 'HANDLE' of greater size
+D:\Project1\TextFileCompress\StringCompress.cpp(436,60): warning C4244: 'argument': conversion from '__int64' to 'int', possible loss of data
+D:\Project1\TextFileCompress\StringCompress.cpp(440,34): warning C4244: 'argument': conversion from '__int64' to 'int', possible loss of data
+D:\Project1\TextFileCompress\StringCompress.cpp(498,20): warning C4244: '=': conversion from '__int64' to 'int', possible loss of data
+D:\Project1\TextFileCompress\StringCompress.cpp(629,50): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+D:\Project1\TextFileCompress\StringCompress.cpp(644,52): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\type_traits(1579,1): warning C4244: 'argument': conversion from '_Ty' to 'int', possible loss of data
+          with
+          [
+              _Ty=__int64
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\type_traits(1579): message : see reference to function template instantiation 'void std::_Invoker_functor::_Call<void(__cdecl *)(char *,int,char **,int),_Ty,__int64,char**,int>(_Callable &&,_Ty &&,__int64 &&,char **&&,int &&) noexcept(false)' being compiled
+          with
+          [
+              _Ty=char *,
+              _Callable=void (__cdecl *)(char *,int,char **,int)
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\thread(39): message : see reference to function template instantiation 'void std::invoke<void(__cdecl *)(char *,int,char **,int),char*,__int64,char**,int>(_Callable &&,char *&&,__int64 &&,char **&&,int &&) noexcept(false)' being compiled
+          with
+          [
+              _Callable=void (__cdecl *)(char *,int,char **,int)
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\thread(49): message : see reference to function template instantiation 'unsigned int std::thread::_Invoke<_Tuple,0,1,2,3,4>(void *) noexcept' being compiled
+          with
+          [
+              _Tuple=_Tuple
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\thread(55): message : see reference to function template instantiation 'unsigned int (__cdecl *std::thread::_Get_invoke<_Tuple,0,1,2,3,4>(std::integer_sequence<unsigned __int64,0,1,2,3,4>) noexcept)(void *) noexcept' being compiled
+D:\Project1\TextFileCompress\StringCompress.cpp(497): message : see reference to function template instantiation 'std::thread::thread<void(__cdecl &)(char *,int,char **,int),char*&,__int64,char**&,int&,void>(_Fn,char *&,__int64 &&,char **&,int &)' being compiled
+          with
+          [
+              _Fn=void (__cdecl &)(char *,int,char **,int)
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\chrono(632): message : see reference to class template instantiation 'std::chrono::duration<double,std::ratio<1,1>>' being compiled
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\chrono(178): message : see reference to class template instantiation 'std::chrono::duration<__int64,std::nano>' being compiled
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\chrono(610): message : see reference to class template instantiation 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>' being compiled
   TextFileCompress.vcxproj -> D:\Project1\TextFileCompress\x64\Debug\TextFileCompress.exe

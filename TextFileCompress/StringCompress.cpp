@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 #include <Windows.h>
+#include <thread>
 #include "BurrowsWheelerTransform.h"
 
 using namespace std;
@@ -400,18 +401,31 @@ void StringCompress::readFile(fstream* f, char* buffer, long long* count)
 	(*count)++;
 }
 
-void StringCompress::compress(const char* sourceFile, const char* destFile)
+void StringCompress::readFile(std::fstream& f, char* buffer, long long size)
 {
-	//get file size
+	for (long long i = 0; i < size; i++)
+	{
+		buffer[i] = f.get();
+	}
+}
+
+long long StringCompress::getFileSize(const char* file)
+{
 	LPOFSTRUCT lpReOpenBuff = new _OFSTRUCT();
-	HFILE h = OpenFile(sourceFile, lpReOpenBuff, OF_READ);
+	HFILE h = OpenFile(file, lpReOpenBuff, OF_READ);
 	LARGE_INTEGER size;
 	GetFileSizeEx((HANDLE)h, &size);
 	CloseHandle((HANDLE)h);
 	delete lpReOpenBuff;
+	return size.QuadPart;
+}
 
-	char* buffer = new char[size.QuadPart + 2];
-	buffer[size.QuadPart + 1] = '\0';
+void StringCompress::compress(const char* sourceFile, const char* destFile)
+{
+	long long fileSize = getFileSize(sourceFile);
+
+	char* buffer = new char[fileSize + 2];
+	buffer[fileSize + 1] = '\0';
 
 	fstream source(sourceFile);
 	
@@ -442,9 +456,92 @@ void StringCompress::compress(const char* sourceFile, const char* destFile)
 
 }
 
+void StringCompress::multiThreadCompress(const char* sourceFile, const char* destFile, int nThread, int minSize, int maxSize)
+{
+	long long fileSize = getFileSize(sourceFile);
+
+	char** buffer = new char* [nThread];
+	char** bwtBuffer = new char* [nThread];
+	int* count = new int[nThread];
+
+	fstream source(sourceFile);
+	fstream dest(destFile, std::ofstream::out | std::ofstream::trunc);
+
+	thread** thrArr = new thread * [nThread];
+	bool stop = false;
+	while (!stop)
+	{
+		int nCurThr = 0;
+		for (int i = 0; i < nThread; i++)
+		{
+			long long size = 0;
+			if (fileSize == 0)
+			{
+				stop = true;
+				break;
+			}
+			if (fileSize < minSize || fileSize < maxSize)
+			{
+				size = fileSize;
+				fileSize = 0;
+			}
+			else if (fileSize != 0)
+			{
+				size = minSize;
+				fileSize -= size;
+			}
+			buffer[i] = new char[size + 2];
+			buffer[i][size + 1] = '\0';
+			buffer[i][size] = '$';
+			readFile(source, buffer[i], size);
+			thrArr[i] = new thread(BurrowsWheelerTransform::doTransform, buffer[i], size + 1, bwtBuffer, i);
+			count[i] = size + 2;
+			nCurThr++;
+
+		}
+
+		for (int i = 0; i < nCurThr; i++)
+		{
+			if (thrArr[i]->joinable())
+			{
+				thrArr[i]->join();
+			}
+			delete thrArr[i];
+			delete[] buffer[i];
+		}
+
+		for (int i = 0; i < nCurThr; i++)
+		{
+			int zipStrlen = 0;
+			char* zipStr = compress(bwtBuffer[i], count[i], &zipStrlen);
+			delete[] bwtBuffer[i];
+
+			string str = to_string(count[i]);
+			dest.write(str.c_str(), str.length());
+			dest.write("\n", 1);
+
+			str = to_string(zipStrlen);
+			dest.write(str.c_str(), str.length());
+			dest.write("\n", 1);
+
+			dest.write(zipStr, zipStrlen);
+			
+		}
+
+	}
+	delete[] thrArr;
+	delete[] buffer;
+	delete[] bwtBuffer;
+	delete[] count;
+
+	source.close();
+	dest.flush();
+	dest.close();
+}
+
 void StringCompress::uncompress(const char* sourceFile, const char* destFile)
 {
-	fstream source(sourceFile);
+	/*fstream source(sourceFile);
 
 	char* digits = new char[30]();
 	char c = source.get();
@@ -504,5 +601,75 @@ void StringCompress::uncompress(const char* sourceFile, const char* destFile)
 
 	delete[] destData;
 
+	dest.close();*/
+	fstream source(sourceFile);
+
+	char* digits = new char[30]();
+
+	fstream dest(destFile, std::ofstream::out | std::ofstream::trunc);
+
+	while (true)
+	{
+		char c = source.get();
+		if (c - '0' > 9 || c - '0' < 0)
+		{
+			break;
+		}
+		int count = 0;
+		while (c != '\n')
+		{
+			digits[count] = c - '0';
+			c = source.get();
+			count++;
+		}
+
+		int destSize = 0;
+		for (int j = count - 1; j > -1; j--)
+		{
+			destSize += pow(10, count - j - 1) * digits[j];
+		}
+
+		int sourceSize = 0;
+
+		count = 0;
+		c = source.get();
+		while (c != '\n')
+		{
+			digits[count] = c - '0';
+			c = source.get();
+			count++;
+		}
+		for (int j = count - 1; j > -1; j--)
+		{
+			sourceSize += pow(10, count - j - 1) * digits[j];
+		}
+		
+
+		char* srcBuffer = new char[(long long)sourceSize + 1];
+		srcBuffer[sourceSize] = '\0';
+
+		count = 0;
+		while (count < sourceSize)
+		{
+			srcBuffer[count] = source.get();
+			count++;
+		}
+
+		char* destBuffer = uncompress(srcBuffer, destSize);
+		delete[] srcBuffer;
+
+		int destDataSize = 0;
+		char* destData = BurrowsWheelerTransform::inverseTransform(destBuffer);
+		delete[] destBuffer;
+		
+		dest.write(destData, (long long)destSize - 2);
+		delete[] destData;
+
+	}
+	delete[] digits;
+	source.close();
+	
+	dest.flush();
 	dest.close();
+
 }

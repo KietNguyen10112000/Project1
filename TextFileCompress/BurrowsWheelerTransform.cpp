@@ -105,3 +105,8 @@ char* BurrowsWheelerTransform::inverseTransform(char* str)
 	return result;
 }
 
+void BurrowsWheelerTransform::doTransform(char* str, int strlength, char** outBuffer, int index)
+{
+	outBuffer[index] = transform(str, strlength);
+}
+

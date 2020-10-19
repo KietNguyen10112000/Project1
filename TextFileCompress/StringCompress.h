@@ -12,6 +12,7 @@ public:
 private:
 	//read file and count number of charater
 	static void readFile(std::fstream* f, char* buffer, long long* count);
+	static void readFile(std::fstream &f, char* buffer, long long size);
 
 public:
 	//compress string that has letters only (a-z and A-Z);
@@ -40,9 +41,16 @@ public:
 
 	static char* uncompress(char* str, int strlen);
 
-	//compress a text file
+	//get file size in byte
 	//window platform only
+	static long long getFileSize(const char* file);
+
+	//compress a text file
 	static void compress(const char* sourceFile, const char* destFile);
+	//compress a text file, multi thread processing, block partition, defaul 1 thread, 4~10 mb per block
+	static void multiThreadCompress(const char* sourceFile, const char* destFile, int nThread = 1, 
+		int minSize = 4*1024*1024, int maxSize = 10*1024*1024);
+
 	//uncompress a text file
 	static void uncompress(const char* sourceFile, const char* destFile);
 
