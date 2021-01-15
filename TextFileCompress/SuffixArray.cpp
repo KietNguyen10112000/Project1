@@ -9,7 +9,8 @@ struct FirstSfCompare
 
 	bool operator () (int i, int j)
 	{
-		return str[i] < str[j];
+		return (unsigned char)str[i] < (unsigned char)str[j];
+		//return strcmp(&str[i], &str[j]) < 0;
 	}
 };
 struct SfCompare {
@@ -59,6 +60,8 @@ SuffixArray::SuffixArray(char* str, int strlen)
 		this->str = str;
 		manySfArr++;
 		makeSuffixArrayNormal();
+		//print();
+		//makeSuffixArrayFast();
 	}
 	else {
 		throw "Cannot initializing more SuffixArray at the moment !!!";
@@ -111,49 +114,79 @@ void SuffixArray::calculateIndexArr(int* index, int deep, int* outIndex)
 
 int SuffixArray::calculateIndex(int i, int j, int deep, int* index)
 {
-	while (deep != 0)
-	{
-		deep = deep / 2;
+	//while (deep != 0)
+	//{
+		//deep = deep / 2;
 		if (i + deep > strlen - 1 || j + deep > strlen - 1)
 		{
 			int result = count;
 			count++;
 			return result;
 		}
-		if (index[i + deep] != index[j + deep])
+		/*if (index[i + deep] != index[j + deep])
 		{
 			int result = count;
 			count++;
 			return result;
-		}
+		}*/
+	//}
+	if (index[i] != index[j] || index[i + deep] != index[j + deep])
+	{
+		int result = count;
+		count++;
+		return result;
 	}
+	//if (index[i] == index[j])
+	//{
+	//	if (index[i + deep] != index[j + deep])
+	//	{
+	//		int result = count;
+	//		count++;
+	//		return result;
+	//	}
+	//	return count;
+	//}
+	//int result = count;
+	//count++;
+	//return result;
 	return count;
 }
 //this is the better one (4mb take 20s)
 void SuffixArray::makeSuffixArrayNormal()
 {
+	//sfArr = new int[strlen];
+//#ifdef DEBUG
+//	sfArr = vector<int>(strlen);
+//#else
 	sfArr = new int[strlen];
+//#endif 
 
 	for (int i = 0; i < strlen; i++)
 	{
 		sfArr[i] = i;
 	}
 
+//#ifdef DEBUG
+//	sort(sfArr.begin(), sfArr.end(), NormalSfCompare(str));
+//#else
 	sort(&sfArr[0], &sfArr[strlen], NormalSfCompare(str));
+//#endif 
+	//sort(&sfArr[0], &sfArr[strlen], NormalSfCompare(str));
+	return;
 }
 //this's only O(n*Log(n)^2) on paper but so bad in reality (4mb take 260s ~ 300s)
 void SuffixArray::makeSuffixArrayFast()
 {
 
-//#ifdef DEBUG
-	//sfArr = vector<int>(strlen);
-	//vector<int> index1(strlen, 0);
-	//vector<int> index2(strlen, 0);
-//#else
+#ifdef DEBUG
+	sfArr = vector<int>(strlen);
+	vector<int> index1(strlen, 0);
+	vector<int> index2(strlen, 0);
+#else
 	sfArr = new int[strlen];
 	int* index1 = new int[strlen]();
 	int* index2 = new int[strlen]();
-//#endif
+#endif
 
 	for (int i = 0; i < strlen; i++)
 	{
@@ -163,27 +196,32 @@ void SuffixArray::makeSuffixArrayFast()
 	SfCompare cmp(&index1[0], 0);
 	
 //#ifdef DEBUG
-	//sort(sfArr.begin(), sfArr.end(), FirstSfCompare(str));
+//	sort(sfArr.begin(), sfArr.end(), FirstSfCompare(str));
 //#else
 	sort(&sfArr[0], &sfArr[strlen], FirstSfCompare(str));
 //#endif 
 	firstCalculateIndexArr(&index1[0]);
 
 	int i = 1;
-	
+
 	bool flag = true;
 	while (i  < this->strlen)
 	{
 		cmp.jump = i;
 		if (flag)
 		{
-			calculateIndexArr(&index1[0], i, &index2[0]);
+			calculateIndexArr(&index1[0], i / 2, &index2[0]);
 			cmp.index = &index2[0];
 		}
 		else
 		{
-			calculateIndexArr(&index2[0], i, &index1[0]);
+			calculateIndexArr(&index2[0], i / 2, &index1[0]);
 			cmp.index = &index1[0];
+		}
+
+		if (count == this->strlen - 1)
+		{
+			break;
 		}
 		flag = !flag;
 		
@@ -197,7 +235,7 @@ void SuffixArray::makeSuffixArrayFast()
 		i = i * 2;
 	}
 //#ifdef DEBUG
-	
+//	
 //#else
 	delete[] index1;
 	delete[] index2;

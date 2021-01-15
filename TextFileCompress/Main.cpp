@@ -1,103 +1,55 @@
 #include <iostream>
+
+int fileSize = 0;
+
 #include "BurrowsWheelerTransform.h"
 #include "StringCompress.h"
 #include <Windows.h>
 #include <thread>
+#include <string>
 
 using namespace std;
 
-void function(int i)
-{
-	//Sleep(rand() % (1000 + 50 - 0));
-	cout << "Thread: " << i << " has been created !!!" << endl;
-}
-
-int findFirstMatchStrIndex(char* str1, int len1, char* str2, int len2)
-{
-	int result = -1;
-
-	if (len1 > len2)
-	{
-		len1 = len2;
-	}
-	else 
-	{
-		len2 = len1;
-	}
-
-	char* p1 = str1;
-	char* p2 = str2;
-
-	while (true)
-	{
-		if (len1 == 0 || len2 == 0)
-		{
-			if (p1[len1] != p2[len2])
-			{
-				result = len1;
-			}
-			break;
-		}
-		len1 = len1 / 2;
-		len2 = len2 / 2;
-		if (p1[len1] != p2[len2])
-		{
-			result = len1;
-		}
-		else {
-			result = findFirstMatchStrIndex(str1, len1, str2, len2);
-			if (result == -1)
-			{
-				result = findFirstMatchStrIndex(&str1[len1], len1, &str2[len2], len2);
-			}
-		}
-		
-	}
-	return result;
-}
+#include <filesystem>
+namespace fs = std::filesystem;
 
 int main()
 {
-	/*char* str = (char*)"Java's popularity continued to decline this month, \
+	//char* str = (char*)"Java's popularity continued to decline this month, \
 almost clearing the path for Python to snatch its spot as the world's second most popular programming language, \
 according to Tiobe's latest programming language rankings. \n\
 If Python does overtake Java, it would mark the first time since Tiobe began its programming \
 language popularity index in that Java would be outside the top two spots. As Tiobe CEO Paul Jansen notes, \
 C and Java have held the top two spots consistently for two decades. \
-But today-year-old Java is approaching its -time y, falling percentage points compared with October.$";*/
+But today-year-old Java is approaching its -time y, falling percentage points compared with October.$";
 
-//	char* str = (char*)"Java's popularity continued to decline this month, \
-//almost clearing the path for Python to snatch its spot as the world's second most popular programming language, \
-//according to Tiobe's latest programming language rankings. \
-//If Python does overtake Java, it would mark the first time since Tiobe began its programming \
-//language popularity index in 2001 that Java would be outside the top two spots. As Tiobe CEO Paul Jansen notes, \
-//C and Java have held the top two spots consistently for two decades. \
-//But today 25-year-old Java is approaching its -time y, falling 4.32 percentage points compared with October 2019.$";
-//
-//
-//	//char* str = (char*)"banaajshdoiqwoelkzmxcn,asjdnaas$";
-//
-//	int strL = strlen(str);
-//
-//	char* bwtStr = BurrowsWheelerTransform::transform(str, strL);
-//
-//	int zipStrlen = 0;
-//	char* zipStr = StringCompress::compress(bwtStr, strL, &zipStrlen);
-//
-//	char* unZipStr = StringCompress::uncompress(zipStr, strL);
-//
-//	int temp = 0;
-//
-//	char* oriStr = BurrowsWheelerTransform::inverseTransform(unZipStr);
-//
-//
-//	cout << bwtStr << endl;
-//
-//	cout << endl << oriStr << endl;
-//
-//	cout << endl << zipStr << endl;
-//
-//	cout << endl << unZipStr << endl;
+	/*char* str = (char*)"Java's popularity continued to decline this month, \
+almost clearing the path for Python to snatch its spot as the world's second most popular programming language, \
+according to Tiobe's latest programming language rankings. \
+If Python does overtake Java, it would mark the first time since Tiobe began its programming \
+language popularity index in 2001 that Java would be outside the top two spots. As Tiobe CEO Paul Jansen notes, \
+C and Java have held the top two spots consistently for two decades. \
+But today 25-year-old Java is approaching its -time y, falling 4.32 percentage points compared with October 2019.\n\n\n$";
+
+	int strL = strlen(str);
+
+	char* bwtStr = BurrowsWheelerTransform::transform(str, strL);
+
+	int zipStrlen = 0;
+	char* zipStr = StringCompress::compress(bwtStr, strL, &zipStrlen);
+
+	char* unZipStr = StringCompress::uncompress(zipStr, strL);
+
+	char* oriStr = BurrowsWheelerTransform::inverseTransform(unZipStr);
+
+
+	cout << bwtStr << endl;
+
+	cout << endl << oriStr << endl;
+
+	cout << endl << zipStr << endl;
+
+	cout << endl << unZipStr << endl;*/
 
 	//cout << findFirstMatchStrIndex((char*)"abcdefk", 7, (char*)"abddegk", 7) << endl;
 
@@ -128,31 +80,128 @@ But today-year-old Java is approaching its -time y, falling percentage points co
 
 	//StringCompress::compress("D:\\Project1\\TextFileExsample\\bible.txt", "compressText.txt");
 	//StringCompress::compress("D:\\Java\\Game_1\\map\\navigationGrid.txt", "compressText.txt");
+	//long long start = GetTickCount64();
+	//StringCompress::multiThreadCompress("D:\\Project1\\TextFileExsample\\bible.txt", "compressText.txt", 4, 1 * 1024 * 1024, 1.5 * 1024 * 1024);
+	//cout << "Compressed Sucessfully !!!" << endl;
 
-	StringCompress::multiThreadCompress("D:\\Project1\\TextFileExsample\\bible.txt", "compressText.txt", 4, 1 * 1024 * 1024, 2 * 1024 * 1024);
-	cout << "Compressed Sucessfully !!!" << endl;
+	//cout << endl << "Compress Time: " << (GetTickCount64() - start) << endl;
 
-	StringCompress::uncompress("compressText.txt", "textFile.txt");
-	cout << "Uncompressed Sucessfully !!!" << endl;
+	//StringCompress::uncompress("compressText.txt", "textFile.txt");
+	//cout << "Uncompressed Sucessfully !!!" << endl;
 
-	//cout << (char)3 << "AAA" << endl;
-	
-	/*thread** thrArr = new thread * [4];
-	for (int i = 0; i < 4; i++)
+	cout << "Ho ten: Nguyen Huu Kiet\nMSSV: 20183571\n*********************************\nCHUONG TRINH NEN FILE TEXT DEMO\
+		\n*********************************\n";
+
+	int chosen = 0;
+	string filePath = "";
+	string savePath = "";
+
+	while (true)
 	{
-		thrArr[i] = new thread(&function, i);
-	}
+		cout << "\n*********************************\nChon lua chon: \n\
+			\n1. Nen file text.\n\n2. Giai nen file txt_zip.\n\n3. Thoat.\n\nNhap lua chon: ";
+		//cin >> chosen;
+		cin >> chosen;
 
-	for (int i = 0; i < 4; i++)
-	{
-		if (thrArr[i]->joinable())
+		while (chosen != 1 && chosen != 2 && chosen != 3)
 		{
-			thrArr[i]->join();
-			cout << "Thread " << i << " has been deleted" << endl;
-			delete thrArr[i];
+			cout << "Khong co lua chon nao thoa man !!!\nMoi ban chon lai: ";
+			cin >> chosen;
 		}
+
+		if (chosen == 1)
+		{
+			cout << "\nBan da chon nen file !!!\n\n";
+			cout << "File path: ";
+			getline(cin, filePath);
+			getline(cin, filePath);
+			cout << "So luong thread dung song song: ";
+			int numthread = 1;
+			cin >> numthread;
+			while (numthread < 1)
+			{
+				cout << "So luong thread khong hop le, nhap lai: ";
+				cin >> numthread;
+			}
+
+			savePath = filePath + "_zip";
+
+			try
+			{
+				fileSize = StringCompress::getFileSize(filePath.c_str());
+				int min = 0, max = 0;
+				if (fileSize < 10 * 1024 * 1024)
+				{
+					min = fileSize / numthread;
+					max = min + 0.5 * 1024 * 1024;
+				}
+				else if (fileSize < 100 * 1024 * 1024)
+				{
+					min = fileSize / (numthread * 2);
+					max = min + 2 * 1024 * 1024;
+				}
+				else if(fileSize < 500 * 1024 * 1024)
+				{
+					min = fileSize / (numthread * 8);
+					max = min + 3 * 1024 * 1024;
+				}
+				else if (fileSize < 1024 * 1024 * 1024)
+				{
+					min = fileSize / (numthread * 16);
+					max = min + 4 * 1024 * 1024;
+				}
+				else 
+				{
+					min = fileSize / (numthread * 16);
+					max = min + 6 * 1024 * 1024;
+					numthread = numthread * 2;
+				}
+				cout << "Processing: 0%";
+				StringCompress::multiThreadCompress(filePath.c_str(), savePath.c_str(),
+					numthread, min, max);
+
+				cout << "\nFile nen cua ban da duoc luu tai: " << savePath << "\n\n";
+				system("pause");
+			}
+			catch (const char* e)
+			{
+				cout << e << endl;
+			}
+
+		}
+		else if (chosen == 2)
+		{
+			cout << "\nBan da chon giai nen file !!!\n\n";
+			cout << "File path: ";
+			getline(cin, filePath);
+			getline(cin, filePath);
+			
+			fs::path _filePath = filePath;
+
+			std::wstring ext = _filePath.extension().c_str();
+			std::transform(ext.begin(), ext.end(), ext.begin(),
+				[](unsigned char c) { return std::tolower(c); });
+
+			savePath = filePath + "_unzip.txt";
+
+			if (L".txt_zip" == ext) // Heed the dot.
+			{
+				StringCompress::uncompress(filePath.c_str(), savePath.c_str());
+			}
+			else
+			{
+				cout << "File sai dinh dang !!!\n";
+			}
+
+			cout << "\nFile giai nen cua ban da duoc luu tai: " << savePath << "\n\n";
+			system("pause");
+		}
+		else if (chosen == 3)
+		{
+			break;
+		}
+		
 	}
-	delete[] thrArr;*/
-	
+
 	return 0;
 }

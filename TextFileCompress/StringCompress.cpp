@@ -391,13 +391,13 @@ void StringCompress::readFile(fstream* f, char* buffer, long long* count)
 	while (!f->eof())
 	{
 		buffer[*count] = f->get();
-		if (buffer[*count] == '\0')
+		/*if (buffer[*count] == '\0')
 		{
 			buffer[*count] = ' ';
-		}
+		}*/
 		(*count)++;
 	}
-	buffer[*count] = '$';
+	buffer[*count] = END_OF_STR;
 	(*count)++;
 }
 
@@ -409,10 +409,23 @@ void StringCompress::readFile(std::fstream& f, char* buffer, long long size)
 	}
 }
 
+void StringCompress::doCompress(char* str, int strlength, char** outBuffer, int* outStrlen, int index)
+{
+	char* bwtStr = BurrowsWheelerTransform::transform(str, strlength);
+	int zipStrlen = 0;
+	outBuffer[index] = StringCompress::compress(bwtStr, strlength, &(zipStrlen));
+	outStrlen[index] = zipStrlen;
+	delete[] bwtStr;
+}
+
 long long StringCompress::getFileSize(const char* file)
 {
 	LPOFSTRUCT lpReOpenBuff = new _OFSTRUCT();
 	HFILE h = OpenFile(file, lpReOpenBuff, OF_READ);
+	if (h == HFILE_ERROR)
+	{
+		throw "File doesn't exist !!!";
+	}
 	LARGE_INTEGER size;
 	GetFileSizeEx((HANDLE)h, &size);
 	CloseHandle((HANDLE)h);
@@ -456,12 +469,16 @@ void StringCompress::compress(const char* sourceFile, const char* destFile)
 
 }
 
+extern int fileSize;
+
 void StringCompress::multiThreadCompress(const char* sourceFile, const char* destFile, int nThread, int minSize, int maxSize)
 {
 	long long fileSize = getFileSize(sourceFile);
 
 	char** buffer = new char* [nThread];
-	char** bwtBuffer = new char* [nThread];
+	//char** bwtBuffer = new char* [nThread];
+	char** zipBuffers = new char* [nThread];
+	int* zipStrlen = new int[nThread];
 	int* count = new int[nThread];
 
 	fstream source(sourceFile);
@@ -492,9 +509,10 @@ void StringCompress::multiThreadCompress(const char* sourceFile, const char* des
 			}
 			buffer[i] = new char[size + 2];
 			buffer[i][size + 1] = '\0';
-			buffer[i][size] = '$';
+			buffer[i][size] = END_OF_STR;
 			readFile(source, buffer[i], size);
-			thrArr[i] = new thread(BurrowsWheelerTransform::doTransform, buffer[i], size + 1, bwtBuffer, i);
+			//thrArr[i] = new thread(BurrowsWheelerTransform::doTransform, buffer[i], size + 1, bwtBuffer, i);
+			thrArr[i] = new thread(StringCompress::doCompress, buffer[i], size + 1, zipBuffers, zipStrlen, i);
 			count[i] = size + 2;
 			nCurThr++;
 
@@ -510,33 +528,40 @@ void StringCompress::multiThreadCompress(const char* sourceFile, const char* des
 			delete[] buffer[i];
 		}
 
+		cout << "\rProcessing: " << (1 - (double)fileSize / (double)::fileSize) * 100 << " %";
+
 		for (int i = 0; i < nCurThr; i++)
 		{
-			int zipStrlen = 0;
-			char* zipStr = compress(bwtBuffer[i], count[i], &zipStrlen);
-			delete[] bwtBuffer[i];
+			//int zipStrlen = 0;
+			//char* zipStr = compress(bwtBuffer[i], count[i], &zipStrlen);
+			//delete[] bwtBuffer[i];
 
 			string str = to_string(count[i]);
 			dest.write(str.c_str(), str.length());
 			dest.write("\n", 1);
 
-			str = to_string(zipStrlen);
+			str = to_string(zipStrlen[i]);
 			dest.write(str.c_str(), str.length());
 			dest.write("\n", 1);
 
-			dest.write(zipStr, zipStrlen);
+			//dest.write(zipStr, zipStrlen);
+			dest.write(zipBuffers[i], zipStrlen[i]);
+			delete[] zipBuffers[i];
 			
 		}
 
 	}
 	delete[] thrArr;
 	delete[] buffer;
-	delete[] bwtBuffer;
+	//delete[] bwtBuffer;
 	delete[] count;
+	delete[] zipBuffers;
+	delete[] zipStrlen;
 
 	source.close();
 	dest.flush();
 	dest.close();
+	cout << endl;
 }
 
 void StringCompress::uncompress(const char* sourceFile, const char* destFile)

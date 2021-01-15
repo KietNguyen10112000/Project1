@@ -1,5 +1,7 @@
 #pragma once
 
+#define END_OF_STR 255
+
 class BurrowsWheelerTransform
 {
 private:
@@ -17,7 +19,7 @@ public:
 	static char* transform(char* str, int strlength);
 	static char* inverseTransform(char* str);
 
-	static void doTransform(char* str, int strlength, char** outBuffer, int index);
+	//static void doTransform(char* str, int strlength, char** outBuffer, int index);
 
 	//static char* inverseTransform(char* str);
 

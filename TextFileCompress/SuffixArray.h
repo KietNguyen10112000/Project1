@@ -1,7 +1,7 @@
 #pragma once
 #include <algorithm>
 #include <iostream>
-//#include <vector>
+#include <vector>
 
 using namespace std;
 
@@ -18,7 +18,7 @@ public:
 	int strlen;
 
 //#ifdef DEBUG
-	//vector<int> sfArr;
+//	vector<int> sfArr;
 //#else
 	int* sfArr;
 //#endif

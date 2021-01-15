@@ -91,7 +91,7 @@ char* BurrowsWheelerTransform::inverseTransform(char* str)
 		apbIndex[curChar]++;
 	}
 
-	int index = findIndex<char>(str, strlength, '$');
+	int index = findIndex<char>(str, strlength, END_OF_STR);
 	for (int i = 0; i < strlength; i++)
 	{
 		result[i] = str[nextStr[index]];
@@ -105,8 +105,8 @@ char* BurrowsWheelerTransform::inverseTransform(char* str)
 	return result;
 }
 
-void BurrowsWheelerTransform::doTransform(char* str, int strlength, char** outBuffer, int index)
-{
-	outBuffer[index] = transform(str, strlength);
-}
+//void BurrowsWheelerTransform::doTransform(char* str, int strlength, char** outBuffer, int index)
+//{
+//	outBuffer[index] = transform(str, strlength);
+//}
 

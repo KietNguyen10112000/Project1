@@ -13,6 +13,7 @@ private:
 	//read file and count number of charater
 	static void readFile(std::fstream* f, char* buffer, long long* count);
 	static void readFile(std::fstream &f, char* buffer, long long size);
+	static void doCompress(char* str, int strlength, char** outBuffer, int* outStrlen, int index);
 
 public:
 	//compress string that has letters only (a-z and A-Z);
